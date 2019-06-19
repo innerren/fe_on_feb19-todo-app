@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/fe_on_feb19-todo-app/static/css/main.2cce8147.chunk.css",
-    "main.js": "/fe_on_feb19-todo-app/static/js/main.65399998.chunk.js",
-    "main.js.map": "/fe_on_feb19-todo-app/static/js/main.65399998.chunk.js.map",
+    "main.css": "/fe_on_feb19-todo-app/static/css/main.1592fa1c.chunk.css",
+    "main.js": "/fe_on_feb19-todo-app/static/js/main.f9b59aa9.chunk.js",
+    "main.js.map": "/fe_on_feb19-todo-app/static/js/main.f9b59aa9.chunk.js.map",
     "runtime~main.js": "/fe_on_feb19-todo-app/static/js/runtime~main.bc6d5655.js",
     "runtime~main.js.map": "/fe_on_feb19-todo-app/static/js/runtime~main.bc6d5655.js.map",
-    "static/js/2.b41502e9.chunk.js": "/fe_on_feb19-todo-app/static/js/2.b41502e9.chunk.js",
-    "static/js/2.b41502e9.chunk.js.map": "/fe_on_feb19-todo-app/static/js/2.b41502e9.chunk.js.map",
+    "static/js/2.89964905.chunk.js": "/fe_on_feb19-todo-app/static/js/2.89964905.chunk.js",
+    "static/js/2.89964905.chunk.js.map": "/fe_on_feb19-todo-app/static/js/2.89964905.chunk.js.map",
     "index.html": "/fe_on_feb19-todo-app/index.html",
-    "precache-manifest.1f623103d9b147d9d10d8c491ced5bf1.js": "/fe_on_feb19-todo-app/precache-manifest.1f623103d9b147d9d10d8c491ced5bf1.js",
+    "precache-manifest.3c2097deb8afd0c2d9b9d375bd842c61.js": "/fe_on_feb19-todo-app/precache-manifest.3c2097deb8afd0c2d9b9d375bd842c61.js",
     "service-worker.js": "/fe_on_feb19-todo-app/service-worker.js",
-    "static/css/main.2cce8147.chunk.css.map": "/fe_on_feb19-todo-app/static/css/main.2cce8147.chunk.css.map",
-    "static/media/logo.svg": "/fe_on_feb19-todo-app/static/media/logo.5d5d9eef.svg"
+    "static/css/main.1592fa1c.chunk.css.map": "/fe_on_feb19-todo-app/static/css/main.1592fa1c.chunk.css.map"
   }
 }
