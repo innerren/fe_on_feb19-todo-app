@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/fe_on_feb19-todo-app/static/css/main.97157a69.chunk.css",
+    "main.css": "/fe_on_feb19-todo-app/static/css/main.d30885e1.chunk.css",
     "main.js": "/fe_on_feb19-todo-app/static/js/main.18f20afc.chunk.js",
     "main.js.map": "/fe_on_feb19-todo-app/static/js/main.18f20afc.chunk.js.map",
     "runtime~main.js": "/fe_on_feb19-todo-app/static/js/runtime~main.bc6d5655.js",
@@ -8,8 +8,8 @@
     "static/js/2.89964905.chunk.js": "/fe_on_feb19-todo-app/static/js/2.89964905.chunk.js",
     "static/js/2.89964905.chunk.js.map": "/fe_on_feb19-todo-app/static/js/2.89964905.chunk.js.map",
     "index.html": "/fe_on_feb19-todo-app/index.html",
-    "precache-manifest.da3a1649c88b3e21bf6840224725069b.js": "/fe_on_feb19-todo-app/precache-manifest.da3a1649c88b3e21bf6840224725069b.js",
+    "precache-manifest.4c7877e266d65840684e8f4dd21e9e77.js": "/fe_on_feb19-todo-app/precache-manifest.4c7877e266d65840684e8f4dd21e9e77.js",
     "service-worker.js": "/fe_on_feb19-todo-app/service-worker.js",
-    "static/css/main.97157a69.chunk.css.map": "/fe_on_feb19-todo-app/static/css/main.97157a69.chunk.css.map"
+    "static/css/main.d30885e1.chunk.css.map": "/fe_on_feb19-todo-app/static/css/main.d30885e1.chunk.css.map"
   }
 }
