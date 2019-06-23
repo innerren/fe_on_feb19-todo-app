@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import TodoItems from "./todoitems";
+import Filters from "./filters";
 
 class App extends React.Component {
   constructor(props) {
@@ -13,39 +14,37 @@ class App extends React.Component {
         "another task": false,
         "last task": false
       },
-      viewedItems: 0,
+      completedItems: 0,
       filter: null,
       displayStyle: { display: "block" },
-      isSelect: {
-        all: "selected",
-        active: "",
-        completed: ""
-      }
+      isSelect: ["all", "active", "completed"]
     };
   }
 
-  countingItems = count => {
-    this.setState({
-      viewedItems: count
+  completingItems = () => {
+    this.setState(prevState => {
+      return { completedItems: prevState.completedItems + 1 };
     });
+  };
+
+  leftIems = () => {
+    return Object.keys(this.state.textLines).length - this.state.completedItems;
   };
 
   addTask = event => {
     if (event.key === "Enter") {
       let task = event.target.value;
       event.target.value = "";
-      this.setState({ displayStyle: { display: "block" } });
       this.setState(prevState => {
         const tmp = { ...prevState.textLines };
         tmp[task] = false;
-        return { textLines: tmp };
+        return { textLines: tmp, displayStyle: { display: "block" } };
       });
     }
   };
 
   changeDisplay = isView => {
     const newDisplay = isView ? { display: "none" } : { display: "block" };
-    console.log(newDisplay);
     this.setState({ displayStyle: newDisplay });
   };
 
@@ -64,6 +63,13 @@ class App extends React.Component {
       return { textLines: tmp };
     });
   };
+
+  setFilter = newFilter => {
+    this.setState({
+      filter: newFilter
+    });
+  };
+
   clearComplete = () => {
     this.setState(prevState => {
       const tmp = { ...prevState.textLines };
@@ -72,7 +78,7 @@ class App extends React.Component {
           delete tmp[key];
         }
       }
-      return { textLines: tmp };
+      return { textLines: tmp, completedItems: 0 };
     });
   };
 
@@ -82,6 +88,7 @@ class App extends React.Component {
         this.setState({ displayStyle: { display: "none" } });
       }
     }
+
     return (
       <section className="todoapp">
         <header className="header">
@@ -91,7 +98,7 @@ class App extends React.Component {
             className="new-todo"
             placeholder="What needs to be done?"
             autoFocus=""
-            autocomplete="off"
+            autoComplete="off"
             onKeyPress={this.addTask}
           />
         </header>
@@ -104,70 +111,20 @@ class App extends React.Component {
               toggleIsComplete={this.isComplete}
               removeTask={this.removeTask}
               filter={this.state.filter}
-              countingItems={this.countingItems}
-              viewedItems={this.state.viewedItems}
+              completingItems={this.completingItems}
             />
           </ul>
         </section>
         <footer className="footer" style={this.state.displayStyle}>
           <span className="todo-count">
-            <strong>{this.state.viewedItems}</strong> items left
+            <strong>{this.leftIems()}</strong> items left
           </span>
           <ul className="filters">
-            <li>
-              <a
-                href="#/"
-                className={this.state.isSelect.all}
-                onClick={() => {
-                  this.setState({
-                    filter: null,
-                    isSelect: {
-                      all: "selected",
-                      active: "",
-                      completed: ""
-                    }
-                  });
-                }}
-              >
-                All
-              </a>
-            </li>
-            <li>
-              <a
-                href="#/active"
-                className={this.state.isSelect.active}
-                onClick={() => {
-                  this.setState({
-                    filter: "active",
-                    isSelect: {
-                      all: "",
-                      active: "selected",
-                      completed: ""
-                    }
-                  });
-                }}
-              >
-                Active
-              </a>
-            </li>
-            <li>
-              <a
-                href="#/completed"
-                className={this.state.isSelect.completed}
-                onClick={() => {
-                  this.setState({
-                    filter: "completed",
-                    isSelect: {
-                      all: "",
-                      active: "",
-                      completed: "selected"
-                    }
-                  });
-                }}
-              >
-                Completed
-              </a>
-            </li>
+            <Filters
+              isSelect={this.state.isSelect}
+              setFilter={this.setFilter}
+              filter={this.state.filter}
+            />
           </ul>
           <button
             className="clear-completed"

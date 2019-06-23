@@ -193,6 +193,7 @@ body {
   border: none; /* Mobile Safari */
   -webkit-appearance: none;
   appearance: none;
+  cursor: pointer;
 }
 
 .todo-list li .toggle {
@@ -237,6 +238,7 @@ body {
   margin: auto 0;
   font-size: 30px;
   color: #cc9a9a;
+  cursor: pointer;
   margin-bottom: 11px;
   transition: color 0.2s ease-out;
 }
@@ -306,7 +308,14 @@ body {
   display: inline;
 }
 
-.filters li a {
+.radio input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  margin: 10px 0 0 7px;
+}
+
+.radio-text {
   color: inherit;
   margin: 3px;
   padding: 3px 7px;
@@ -315,11 +324,11 @@ body {
   border-radius: 3px;
 }
 
-.filters li a:hover {
+.radio-text:hover {
   border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters li a.selected {
+.radio input:checked ~ .radio-text{
   border-color: rgba(175, 47, 47, 0.2);
 }
 
