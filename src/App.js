@@ -45,6 +45,33 @@ class App extends React.Component {
     });
   };
 
+  escapeEdit = (e, title) => {
+    e.target.innerText = title;
+    e.target.contentEditable = false;
+  };
+
+  editTask = (e, id, title) => {
+    if (e.keyCode === 13) {
+      const newTitle = e.target.innerText;
+      this.setState(prevState => {
+        return {
+          items: prevState.items.map(item => {
+            if (item.id === id) {
+              const tmp = { ...item };
+              tmp.title = newTitle;
+              return tmp;
+            }
+            return item;
+          }),
+        };
+      });
+      e.target.contentEditable = false;
+    }
+    if (e.keyCode === 27) {
+      this.escapeEdit(e, title);
+    }
+  };
+
   removeTask = id => {
     this.setState(prevState => {
       return { items: prevState.items.filter(item => item.id !== id) };
@@ -117,6 +144,8 @@ class App extends React.Component {
             removeTask={this.removeTask}
             filter={this.state.filter}
             completingItems={this.completingItems}
+            editTask={this.editTask}
+            escapeEdit={this.escapeEdit}
           />
         </section>
         <footer className="footer" style={this.state.displayStyle}>
