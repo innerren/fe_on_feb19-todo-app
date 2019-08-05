@@ -1,141 +1,141 @@
 import React from "react";
 import "./App.css";
-import TodoItems from "./todoitems";
-import Filters from "./filters";
+import TodoItems from "./TodoItems";
+import Footer from "./Footer";
+import Header from "./Header";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      textLines: {
-        hello: false,
-        bye: false,
-        "another task": false,
-        "last task": false
-      },
-      completedItems: 0,
+      items: [],
       filter: null,
-      displayStyle: { display: "block" },
-      isSelect: ["all", "active", "completed"]
+      displayed: false,
+      filters: ["all", "active", "completed"],
     };
   }
 
-  completingItems = () => {
-    this.setState(prevState => {
-      return { completedItems: prevState.completedItems + 1 };
-    });
+  completedItems = () => {
+    return this.state.items.filter(item => item.completed).length;
   };
 
   leftIems = () => {
-    return Object.keys(this.state.textLines).length - this.state.completedItems;
+    return this.state.items.length - this.completedItems();
   };
 
-  addTask = event => {
-    if (event.key === "Enter") {
-      let task = event.target.value;
-      event.target.value = "";
-      this.setState(prevState => {
-        const tmp = { ...prevState.textLines };
-        tmp[task] = false;
-        return { textLines: tmp, displayStyle: { display: "block" } };
-      });
-    }
-  };
+  addTask = (e, value) => {
+    const item = {};
+    item.title = value;
+    e.preventDefault();
+    item.completed = false;
+    item.editable = false;
 
-  changeDisplay = isView => {
-    const newDisplay = isView ? { display: "none" } : { display: "block" };
-    this.setState({ displayStyle: newDisplay });
-  };
-
-  removeTask = key => {
     this.setState(prevState => {
-      const tmp = { ...prevState.textLines };
-      delete tmp[key];
-      return { textLines: tmp };
+      item.id
+        = prevState.items.length === 0
+          ? 0
+          : prevState.items[prevState.items.length - 1].id + 1;
+      return { items: [...prevState.items, item], displayed: true };
     });
   };
 
-  isComplete = key => {
+  setEditable = id => {
     this.setState(prevState => {
-      const tmp = { ...prevState.textLines };
-      tmp[key] = !prevState.textLines[key];
-      return { textLines: tmp };
+      return {
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, editable: true } : item
+        ),
+      };
+    });
+  };
+
+  escapeEdit = (e, title, id) => {
+    e.target.innerText = title;
+    this.setState(prevState => {
+      return {
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, editable: false } : item
+        ),
+      };
+    });
+  };
+
+  editTask = (e, id, title) => {
+    if (e.keyCode === 13) {
+      const newTitle = e.target.innerText;
+      this.setState(prevState => {
+        return {
+          items: prevState.items.map(item =>
+            item.id === id
+              ? { ...item, title: newTitle, editable: false }
+              : item
+          ),
+        };
+      });
+    }
+    if (e.keyCode === 27) {
+      this.escapeEdit(e, title, id);
+    }
+  };
+
+  removeTask = id => {
+    this.setState(prevState => {
+      const tmp = prevState.items.filter(item => item.id !== id);
+
+      return { items: tmp, displayed: !(tmp.length === 0) };
+    });
+  };
+
+  isComplete = id => {
+    this.setState(prevState => {
+      return {
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, completed: !item.completed } : item
+        ),
+      };
     });
   };
 
   setFilter = newFilter => {
     this.setState({
-      filter: newFilter
+      filter: newFilter,
     });
   };
 
   clearComplete = () => {
     this.setState(prevState => {
-      const tmp = { ...prevState.textLines };
-      for (let key in tmp) {
-        if (tmp[key]) {
-          delete tmp[key];
-        }
-      }
-      return { textLines: tmp, completedItems: 0 };
+      return { items: prevState.items.filter(item => !item.completed) };
     });
   };
 
   render() {
-    if (this.state.displayStyle.display === "block") {
-      if (Object.keys(this.state.textLines).length === 0) {
-        this.setState({ displayStyle: { display: "none" } });
-      }
-    }
-
     return (
       <section className="todoapp">
-        <header className="header">
-          <h1>todos App</h1>
-
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus=""
-            autoComplete="off"
-            onKeyPress={this.addTask}
-          />
-        </header>
+        <Header addTask={this.addTask} />
         <section className="main" style={this.state.displayStyle}>
           <input id="toggle-all" className="toggle-all" type="checkbox" />
           <label htmlFor="toggle-all">Mark all as complete</label>
-          <ul className="todo-list">
-            <TodoItems
-              textLines={this.state.textLines}
-              toggleIsComplete={this.isComplete}
-              removeTask={this.removeTask}
-              filter={this.state.filter}
-              completingItems={this.completingItems}
-            />
-          </ul>
+          <TodoItems
+            items={this.state.items}
+            toggleIsComplete={this.isComplete}
+            removeTask={this.removeTask}
+            filter={this.state.filter}
+            completingItems={this.completingItems}
+            editTask={this.editTask}
+            escapeEdit={this.escapeEdit}
+            setEditable={this.setEditable}
+          />
         </section>
-        <footer className="footer" style={this.state.displayStyle}>
-          <span className="todo-count">
-            <strong>{this.leftIems()}</strong> items left
-          </span>
-          <ul className="filters">
-            <Filters
-              isSelect={this.state.isSelect}
-              setFilter={this.setFilter}
-              filter={this.state.filter}
-            />
-          </ul>
-          <button
-            className="clear-completed"
-            style={this.state.displayStyle}
-            onClick={() => {
-              this.clearComplete();
-            }}
-          >
-            clear-completed
-          </button>
-        </footer>
+        {this.state.displayed ? (
+          <Footer
+            leftIems={this.leftIems}
+            setFilter={this.setFilter}
+            clearComplete={this.clearComplete}
+            filters={this.state.filters}
+            filter={this.state.filter}
+          />
+        ) : null}
       </section>
     );
   }

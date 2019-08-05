@@ -13,9 +13,9 @@ class TodoItems extends React.Component {
           />
           <label
             tabIndex={index}
-            contentEditable={false}
+            contentEditable={item.editable}
             onDoubleClick={e => {
-              e.target.contentEditable = true;
+              this.props.setEditable(item.id);
               e.target.focus();
             }}
             onBlur={e => {
@@ -43,7 +43,7 @@ class TodoItems extends React.Component {
         ? items.filter(item => item.completed)
         : filtr === "active"
         ? items.filter(item => !item.completed)
-        : [...items];
+        : items;
 
     return <ul className="todo-list">{this.list(filtredTasks)}</ul>;
   }
