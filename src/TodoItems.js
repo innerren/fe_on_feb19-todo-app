@@ -2,7 +2,7 @@ import React from "react";
 
 class TodoItems extends React.Component {
   list = tasks => {
-    return tasks.map(item => (
+    return tasks.map((item, index) => (
       <li className="" key={item.id}>
         <div className="view">
           <input
@@ -11,7 +11,18 @@ class TodoItems extends React.Component {
             checked={item.completed}
             onChange={() => this.props.toggleIsComplete(item.id)}
           />
-          <label onClick={() => this.props.toggleIsComplete(item.id)}>
+          <label
+            tabIndex={index}
+            contentEditable={item.editable}
+            onDoubleClick={e => {
+              this.props.setEditable(item.id);
+              e.target.focus();
+            }}
+            onBlur={e => {
+              this.props.escapeEdit(e, item.title);
+            }}
+            onKeyDown={e => this.props.editTask(e, item.id, item.title)}
+          >
             {item.title}
           </label>
 
@@ -32,7 +43,7 @@ class TodoItems extends React.Component {
         ? items.filter(item => item.completed)
         : filtr === "active"
         ? items.filter(item => !item.completed)
-        : [...items];
+        : items;
 
     return <ul className="todo-list">{this.list(filtredTasks)}</ul>;
   }

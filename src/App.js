@@ -1,24 +1,18 @@
 import React from "react";
 import "./App.css";
 import TodoItems from "./TodoItems";
-import Filters from "./Filters";
+import Footer from "./Footer";
+import Header from "./Header";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      // members of item structure
-      // item: {
-      //   id: 0,
-      //   title: "",
-      //   completed: false,
-      // }
       items: [],
-
       filter: null,
-      displayStyle: { display: "block" },
-      isSelect: ["all", "active", "completed"],
+      displayed: false,
+      filters: ["all", "active", "completed"],
     };
   }
 
@@ -30,24 +24,41 @@ class App extends React.Component {
     return this.state.items.length - this.completedItems();
   };
 
-  addTask = e => {
+  addTask = (e, value) => {
     const item = {};
-    item.title = this.refs.textInput.value;
+    item.title = value;
     e.preventDefault();
     item.completed = false;
-    this.refs.textInput.value = "";
+    item.editable = false;
+
     this.setState(prevState => {
       item.id
         = prevState.items.length === 0
           ? 0
           : prevState.items[prevState.items.length - 1].id + 1;
-      return { items: [...prevState.items, item] };
+      return { items: [...prevState.items, item], displayed: true };
     });
   };
 
-  escapeEdit = (e, title) => {
+  setEditable = id => {
+    this.setState(prevState => {
+      return {
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, editable: true } : item
+        ),
+      };
+    });
+  };
+
+  escapeEdit = (e, title, id) => {
     e.target.innerText = title;
-    e.target.contentEditable = false;
+    this.setState(prevState => {
+      return {
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, editable: false } : item
+        ),
+      };
+    });
   };
 
   editTask = (e, id, title) => {
@@ -55,40 +66,33 @@ class App extends React.Component {
       const newTitle = e.target.innerText;
       this.setState(prevState => {
         return {
-          items: prevState.items.map(item => {
-            if (item.id === id) {
-              const tmp = { ...item };
-              tmp.title = newTitle;
-              return tmp;
-            }
-            return item;
-          }),
+          items: prevState.items.map(item =>
+            item.id === id
+              ? { ...item, title: newTitle, editable: false }
+              : item
+          ),
         };
       });
-      e.target.contentEditable = false;
     }
     if (e.keyCode === 27) {
-      this.escapeEdit(e, title);
+      this.escapeEdit(e, title, id);
     }
   };
 
   removeTask = id => {
     this.setState(prevState => {
-      return { items: prevState.items.filter(item => item.id !== id) };
+      const tmp = prevState.items.filter(item => item.id !== id);
+
+      return { items: tmp, displayed: !(tmp.length === 0) };
     });
   };
 
   isComplete = id => {
     this.setState(prevState => {
       return {
-        items: prevState.items.map(item => {
-          if (item.id === id) {
-            const tmp = { ...item };
-            tmp.completed = !item.completed;
-            return tmp;
-          }
-          return item;
-        }),
+        items: prevState.items.map(item =>
+          item.id === id ? { ...item, completed: !item.completed } : item
+        ),
       };
     });
   };
@@ -106,35 +110,9 @@ class App extends React.Component {
   };
 
   render() {
-    this.setState(prevState => {
-      if (
-        prevState.items.length === 0
-        && prevState.displayStyle.display === "block"
-      ) {
-        return { displayStyle: { display: "none" } };
-      } else if (
-        prevState.items.length !== 0
-        && prevState.displayStyle.display === "none"
-      ) {
-        return { displayStyle: { display: "block" } };
-      }
-    });
-
     return (
       <section className="todoapp">
-        <header className="header">
-          <h1>todos App</h1>
-          <form onSubmit={this.addTask}>
-            <input
-              className="new-todo"
-              placeholder="What needs to be done?"
-              autoFocus=""
-              autoComplete="off"
-              type="text"
-              ref="textInput"
-            />
-          </form>
-        </header>
+        <Header addTask={this.addTask} />
         <section className="main" style={this.state.displayStyle}>
           <input id="toggle-all" className="toggle-all" type="checkbox" />
           <label htmlFor="toggle-all">Mark all as complete</label>
@@ -146,29 +124,18 @@ class App extends React.Component {
             completingItems={this.completingItems}
             editTask={this.editTask}
             escapeEdit={this.escapeEdit}
+            setEditable={this.setEditable}
           />
         </section>
-        <footer className="footer" style={this.state.displayStyle}>
-          <span className="todo-count">
-            <strong>{this.leftIems()}</strong> items left
-          </span>
-
-          <Filters
-            isSelect={this.state.isSelect}
+        {this.state.displayed ? (
+          <Footer
+            leftIems={this.leftIems}
             setFilter={this.setFilter}
+            clearComplete={this.clearComplete}
+            filters={this.state.filters}
             filter={this.state.filter}
           />
-
-          <button
-            className="clear-completed"
-            style={this.state.displayStyle}
-            onClick={() => {
-              this.clearComplete();
-            }}
-          >
-            clear-completed
-          </button>
-        </footer>
+        ) : null}
       </section>
     );
   }
